@@ -1,0 +1,23 @@
+{
+  "name": "html-parser-ai-mcp",
+  "description": "MEOK AI Labs \u2014 HTML parsing and analysis tools powered by MEOK AI Labs.",
+  "vendor": "MEOK AI Labs",
+  "homepage": "https://meok.ai",
+  "repository": "https://github.com/CSOAI-ORG/html-parser-ai-mcp",
+  "runtime": "python",
+  "entrypoint": "server.py",
+  "tools": [
+    "extract_links",
+    "extract_text",
+    "validate_html",
+    "find_meta_tags"
+  ],
+  "categories": [
+    "Web Development",
+    "Data Extraction"
+  ],
+  "pricing": {
+    "free": "50 calls/day",
+    "pro": "$9/mo"
+  }
+}

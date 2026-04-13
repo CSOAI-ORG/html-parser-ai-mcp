@@ -1,0 +1,10 @@
+name: html-parser-ai-mcp
+description: "MEOK AI Labs — HTML parsing and analysis tools powered by MEOK AI Labs."
+vendor: MEOK AI Labs
+homepage: https://meok.ai
+repository: https://github.com/CSOAI-ORG/html-parser-ai-mcp
+license: MIT
+categories: [Web Development, Data Extraction]
+tags: [html-parsing, web-scraping, dom-manipulation, html-extraction, beautifulsoup]
+runtime: python
+entrypoint: server.py

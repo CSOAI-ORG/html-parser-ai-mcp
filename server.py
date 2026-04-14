@@ -1,12 +1,11 @@
 """
 HTML Parser AI MCP Server
-HTML parsing and extraction tools powered by MEOK AI Labs.
+HTML parsing and analysis tools powered by MEOK AI Labs.
 """
 
 import re
 import time
 from collections import defaultdict
-from html.parser import HTMLParser
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("html-parser-ai-mcp")
@@ -14,6 +13,7 @@ mcp = FastMCP("html-parser-ai-mcp")
 _call_counts: dict[str, list[float]] = defaultdict(list)
 FREE_TIER_LIMIT = 50
 WINDOW = 86400
+
 
 def _check_rate_limit(tool_name: str) -> None:
     now = time.time()
@@ -23,160 +23,117 @@ def _check_rate_limit(tool_name: str) -> None:
     _call_counts[tool_name].append(now)
 
 
-class _LinkExtractor(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.links = []
-    def handle_starttag(self, tag, attrs):
-        if tag == 'a':
-            href = dict(attrs).get('href', '')
-            text = dict(attrs).get('title', '')
-            if href:
-                self.links.append({"href": href, "title": text})
-
-
-class _TextExtractor(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.text_parts = []
-        self._skip = False
-    def handle_starttag(self, tag, attrs):
-        if tag in ('script', 'style', 'noscript'):
-            self._skip = True
-    def handle_endtag(self, tag):
-        if tag in ('script', 'style', 'noscript'):
-            self._skip = False
-        if tag in ('p', 'div', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'tr'):
-            self.text_parts.append('\n')
-    def handle_data(self, data):
-        if not self._skip:
-            self.text_parts.append(data)
-
-
-class _MetaExtractor(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.meta_tags = []
-        self.title = ""
-        self._in_title = False
-    def handle_starttag(self, tag, attrs):
-        if tag == 'meta':
-            self.meta_tags.append(dict(attrs))
-        if tag == 'title':
-            self._in_title = True
-    def handle_endtag(self, tag):
-        if tag == 'title':
-            self._in_title = False
-    def handle_data(self, data):
-        if self._in_title:
-            self.title += data
-
-
 @mcp.tool()
 def extract_links(html: str, base_url: str = "") -> dict:
-    """Extract all links from HTML content.
+    """Extract all links (anchor tags) from HTML content.
 
     Args:
-        html: HTML string to parse
-        base_url: Base URL to resolve relative links
+        html: HTML content string
+        base_url: Optional base URL to resolve relative links
     """
     _check_rate_limit("extract_links")
-    parser = _LinkExtractor()
-    parser.feed(html)
-    links = parser.links
-    if base_url:
-        for link in links:
-            href = link["href"]
-            if href.startswith('/'):
-                link["href"] = base_url.rstrip('/') + href
-                link["resolved"] = True
+    links = []
+    for match in re.finditer(r'<a\s[^>]*href=["\']([^"\']*)["\'][^>]*>(.*?)</a>', html, re.IGNORECASE | re.DOTALL):
+        href, text = match.group(1), re.sub(r'<[^>]+>', '', match.group(2)).strip()
+        if base_url and not href.startswith(('http://', 'https://', 'mailto:', '#', 'javascript:')):
+            href = base_url.rstrip('/') + '/' + href.lstrip('/')
+        links.append({"href": href, "text": text[:100]})
     internal = [l for l in links if base_url and l["href"].startswith(base_url)]
-    external = [l for l in links if base_url and not l["href"].startswith(base_url)]
-    return {"links": links[:200], "total": len(links),
-            "internal_count": len(internal) if base_url else 0,
-            "external_count": len(external) if base_url else 0}
+    external = [l for l in links if l["href"].startswith(('http://', 'https://')) and l not in internal]
+    return {"links": links, "total": len(links), "internal": len(internal), "external": len(external)}
 
 
 @mcp.tool()
-def extract_text(html: str) -> dict:
-    """Extract visible text content from HTML, stripping all tags.
+def extract_text(html: str, preserve_newlines: bool = True) -> dict:
+    """Extract plain text content from HTML, stripping all tags.
 
     Args:
-        html: HTML string to extract text from
+        html: HTML content string
+        preserve_newlines: Keep newlines for block elements (default True)
     """
     _check_rate_limit("extract_text")
-    parser = _TextExtractor()
-    parser.feed(html)
-    raw = ''.join(parser.text_parts)
-    # Clean up whitespace
-    text = re.sub(r'\n{3,}', '\n\n', raw)
-    text = re.sub(r'[ \t]+', ' ', text).strip()
+    text = html
+    if preserve_newlines:
+        for tag in ('</p>', '</div>', '</h1>', '</h2>', '</h3>', '</h4>', '</h5>', '</h6>',
+                     '<br>', '<br/>', '<br />', '</li>', '</tr>'):
+            text = text.replace(tag, tag + '\n')
+    text = re.sub(r'<script[^>]*>.*?</script>', '', text, flags=re.DOTALL | re.IGNORECASE)
+    text = re.sub(r'<style[^>]*>.*?</style>', '', text, flags=re.DOTALL | re.IGNORECASE)
+    text = re.sub(r'<!--.*?-->', '', text, flags=re.DOTALL)
+    text = re.sub(r'<[^>]+>', '', text)
+    text = re.sub(r'&nbsp;', ' ', text)
+    text = re.sub(r'&amp;', '&', text)
+    text = re.sub(r'&lt;', '<', text)
+    text = re.sub(r'&gt;', '>', text)
+    text = re.sub(r'&quot;', '"', text)
+    if preserve_newlines:
+        text = re.sub(r'\n{3,}', '\n\n', text)
+    else:
+        text = re.sub(r'\s+', ' ', text)
+    text = text.strip()
     words = text.split()
-    return {"text": text[:10000], "word_count": len(words), "char_count": len(text),
-            "truncated": len(text) > 10000}
+    return {"text": text, "length": len(text), "word_count": len(words)}
 
 
 @mcp.tool()
 def validate_html(html: str) -> dict:
-    """Validate HTML for common issues (unclosed tags, nesting errors).
+    """Validate HTML for common issues (unclosed tags, missing attributes, etc.).
 
     Args:
-        html: HTML string to validate
+        html: HTML content string to validate
     """
     _check_rate_limit("validate_html")
     issues = []
-    self_closing = {'br', 'hr', 'img', 'input', 'meta', 'link', 'area', 'base', 'col', 'embed', 'source', 'track', 'wbr'}
-    stack = []
-    tag_pattern = re.compile(r'<(/?)(\w+)([^>]*?)(/?)>')
-    for m in tag_pattern.finditer(html):
-        is_close, tag, attrs, self_close = m.groups()
-        tag = tag.lower()
-        if tag in self_closing:
-            continue
-        if self_close:
-            continue
+    void_elements = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+                     'link', 'meta', 'param', 'source', 'track', 'wbr'}
+    open_tags = []
+    for match in re.finditer(r'<(/?)(\w+)([^>]*)/?>', html):
+        is_close, tag, attrs = match.group(1), match.group(2).lower(), match.group(3)
         if is_close:
-            if not stack:
-                issues.append({"type": "error", "message": f"Unexpected closing tag </{tag}>", "position": m.start()})
-            elif stack[-1] != tag:
-                issues.append({"type": "error", "message": f"Mismatched tag: expected </{stack[-1]}>, found </{tag}>", "position": m.start()})
-                if tag in stack:
-                    while stack and stack[-1] != tag:
-                        stack.pop()
-                    if stack:
-                        stack.pop()
+            if tag in void_elements:
+                issues.append({"issue": f"Unnecessary closing tag for void element </{tag}>", "severity": "warning"})
+            elif open_tags and open_tags[-1] == tag:
+                open_tags.pop()
+            elif tag in open_tags:
+                issues.append({"issue": f"Misnested closing tag </{tag}>", "severity": "error"})
+                open_tags.remove(tag)
             else:
-                stack.pop()
-        else:
-            stack.append(tag)
-    for tag in stack:
-        issues.append({"type": "error", "message": f"Unclosed tag <{tag}>"})
+                issues.append({"issue": f"Closing tag </{tag}> without matching open tag", "severity": "error"})
+        elif tag not in void_elements and not match.group(0).endswith('/>'):
+            open_tags.append(tag)
+    for tag in open_tags:
+        issues.append({"issue": f"Unclosed tag <{tag}>", "severity": "error"})
+    for match in re.finditer(r'<img\s[^>]*>', html, re.IGNORECASE):
+        if 'alt=' not in match.group(0).lower():
+            issues.append({"issue": "Image missing alt attribute", "severity": "warning"})
     if not re.search(r'<!DOCTYPE', html, re.IGNORECASE):
-        issues.append({"type": "warning", "message": "Missing DOCTYPE declaration"})
-    if not re.search(r'<html', html, re.IGNORECASE):
-        issues.append({"type": "warning", "message": "Missing <html> tag"})
-    score = max(0, 100 - len([i for i in issues if i["type"] == "error"]) * 15 - len([i for i in issues if i["type"] == "warning"]) * 5)
-    return {"valid": len([i for i in issues if i["type"] == "error"]) == 0, "issues": issues[:50],
-            "issue_count": len(issues), "score": score}
+        issues.append({"issue": "Missing DOCTYPE declaration", "severity": "info"})
+    errors = sum(1 for i in issues if i["severity"] == "error")
+    return {"valid": errors == 0, "issues": issues, "error_count": errors,
+            "warning_count": sum(1 for i in issues if i["severity"] == "warning")}
 
 
 @mcp.tool()
 def find_meta_tags(html: str) -> dict:
-    """Extract all meta tags and title from HTML.
+    """Extract all meta tags and their attributes from HTML.
 
     Args:
-        html: HTML string to parse
+        html: HTML content string
     """
     _check_rate_limit("find_meta_tags")
-    parser = _MetaExtractor()
-    parser.feed(html)
-    og_tags = {t.get("property", ""): t.get("content", "") for t in parser.meta_tags if t.get("property", "").startswith("og:")}
-    twitter_tags = {t.get("name", ""): t.get("content", "") for t in parser.meta_tags if t.get("name", "").startswith("twitter:")}
-    description = next((t.get("content", "") for t in parser.meta_tags if t.get("name", "").lower() == "description"), "")
-    keywords = next((t.get("content", "") for t in parser.meta_tags if t.get("name", "").lower() == "keywords"), "")
-    return {"title": parser.title.strip(), "description": description, "keywords": keywords,
-            "og_tags": og_tags, "twitter_tags": twitter_tags, "all_meta": parser.meta_tags[:30],
-            "meta_count": len(parser.meta_tags)}
+    metas = []
+    for match in re.finditer(r'<meta\s([^>]+?)/?>', html, re.IGNORECASE):
+        attrs = {}
+        for attr in re.finditer(r'(\w[\w-]*)=["\']([^"\']*)["\']', match.group(1)):
+            attrs[attr.group(1).lower()] = attr.group(2)
+        metas.append(attrs)
+    title_match = re.search(r'<title[^>]*>(.*?)</title>', html, re.IGNORECASE | re.DOTALL)
+    title = title_match.group(1).strip() if title_match else None
+    og_tags = {m.get("property", ""): m.get("content", "") for m in metas if m.get("property", "").startswith("og:")}
+    twitter_tags = {m.get("name", ""): m.get("content", "") for m in metas if m.get("name", "").startswith("twitter:")}
+    charset = next((m.get("charset", m.get("content", "")) for m in metas if "charset" in m), None)
+    return {"title": title, "meta_tags": metas, "total": len(metas),
+            "open_graph": og_tags, "twitter_cards": twitter_tags, "charset": charset}
 
 
 if __name__ == "__main__":

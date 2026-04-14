@@ -1,10 +1,35 @@
 name: html-parser-ai-mcp
-description: "MEOK AI Labs — HTML parsing and analysis tools powered by MEOK AI Labs."
-vendor: MEOK AI Labs
-homepage: https://meok.ai
-repository: https://github.com/CSOAI-ORG/html-parser-ai-mcp
-license: MIT
-categories: [Web Development, Data Extraction]
-tags: [html-parsing, web-scraping, dom-manipulation, html-extraction, beautifulsoup]
-runtime: python
-entrypoint: server.py
+description: HTML link extraction, text extraction, validation, and meta tag parsing.
+version: 1.0.0
+tools:
+- name: extract_links
+  description: Extract all links (anchor tags) from HTML content.
+  parameters:
+  - name: html
+    type: string
+    required: true
+  - name: base_url
+    type: string
+    required: false
+- name: extract_text
+  description: Extract plain text content from HTML, stripping all tags.
+  parameters:
+  - name: html
+    type: string
+    required: true
+  - name: preserve_newlines
+    type: boolean
+    required: false
+- name: validate_html
+  description: Validate HTML for common issues (unclosed tags, missing attributes,
+    etc.).
+  parameters:
+  - name: html
+    type: string
+    required: true
+- name: find_meta_tags
+  description: Extract all meta tags and their attributes from HTML.
+  parameters:
+  - name: html
+    type: string
+    required: true

@@ -3,6 +3,11 @@ HTML Parser AI MCP Server
 HTML parsing and analysis tools powered by MEOK AI Labs.
 """
 
+
+import sys, os
+sys.path.insert(0, os.path.expanduser('~/clawd/meok-labs-engine/shared'))
+from auth_middleware import check_access
+
 import re
 import time
 from collections import defaultdict
@@ -24,13 +29,17 @@ def _check_rate_limit(tool_name: str) -> None:
 
 
 @mcp.tool()
-def extract_links(html: str, base_url: str = "") -> dict:
+def extract_links(html: str, base_url: str = "", api_key: str = "") -> dict:
     """Extract all links (anchor tags) from HTML content.
 
     Args:
         html: HTML content string
         base_url: Optional base URL to resolve relative links
     """
+    allowed, msg, tier = check_access(api_key)
+    if not allowed:
+        return {"error": msg, "upgrade_url": "https://meok.ai/pricing"}
+
     _check_rate_limit("extract_links")
     links = []
     for match in re.finditer(r'<a\s[^>]*href=["\']([^"\']*)["\'][^>]*>(.*?)</a>', html, re.IGNORECASE | re.DOTALL):
@@ -44,13 +53,17 @@ def extract_links(html: str, base_url: str = "") -> dict:
 
 
 @mcp.tool()
-def extract_text(html: str, preserve_newlines: bool = True) -> dict:
+def extract_text(html: str, preserve_newlines: bool = True, api_key: str = "") -> dict:
     """Extract plain text content from HTML, stripping all tags.
 
     Args:
         html: HTML content string
         preserve_newlines: Keep newlines for block elements (default True)
     """
+    allowed, msg, tier = check_access(api_key)
+    if not allowed:
+        return {"error": msg, "upgrade_url": "https://meok.ai/pricing"}
+
     _check_rate_limit("extract_text")
     text = html
     if preserve_newlines:
@@ -76,12 +89,16 @@ def extract_text(html: str, preserve_newlines: bool = True) -> dict:
 
 
 @mcp.tool()
-def validate_html(html: str) -> dict:
+def validate_html(html: str, api_key: str = "") -> dict:
     """Validate HTML for common issues (unclosed tags, missing attributes, etc.).
 
     Args:
         html: HTML content string to validate
     """
+    allowed, msg, tier = check_access(api_key)
+    if not allowed:
+        return {"error": msg, "upgrade_url": "https://meok.ai/pricing"}
+
     _check_rate_limit("validate_html")
     issues = []
     void_elements = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
@@ -114,12 +131,16 @@ def validate_html(html: str) -> dict:
 
 
 @mcp.tool()
-def find_meta_tags(html: str) -> dict:
+def find_meta_tags(html: str, api_key: str = "") -> dict:
     """Extract all meta tags and their attributes from HTML.
 
     Args:
         html: HTML content string
     """
+    allowed, msg, tier = check_access(api_key)
+    if not allowed:
+        return {"error": msg, "upgrade_url": "https://meok.ai/pricing"}
+
     _check_rate_limit("find_meta_tags")
     metas = []
     for match in re.finditer(r'<meta\s([^>]+?)/?>', html, re.IGNORECASE):

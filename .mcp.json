@@ -1,6 +1,6 @@
 {
   "name": "html-parser-ai-mcp",
-  "description": "> **By [MEOK AI Labs](https://meok.ai)** \u2014 MEOK AI Labs MCP Server",
+  "description": "Html Parser Ai automation via MCP. Includes extract links, extract text, validate html. By MEOK AI Labs.",
   "version": "1.0.0",
   "tools": [
     {

@@ -1,0 +1,10 @@
+{
+  "name": "html-parser-ai-mcp",
+  "description": "MEOK AI Labs \u2014 html-parser-ai-mcp",
+  "vendor": "MEOK AI Labs",
+  "homepage": "https://meok.ai",
+  "repository": "https://github.com/CSOAI-ORG/html-parser-ai-mcp",
+  "license": "MIT",
+  "runtime": "python",
+  "entryPoint": "mcp-wrapper.py"
+}

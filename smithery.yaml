@@ -1,5 +1,5 @@
 name: html-parser-ai-mcp
-description: HTML link extraction, text extraction, validation, and meta tag parsing.
+description: MEOK AI Labs MCP Server
 version: 1.0.0
 tools:
 - name: extract_links

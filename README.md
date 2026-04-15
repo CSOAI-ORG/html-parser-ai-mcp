@@ -1,24 +1,64 @@
-# HTML Parser AI MCP Server
+# Html Parser Ai
 
-HTML link extraction, text extraction, validation, and meta tag parsing.
+> By [MEOK AI Labs](https://meok.ai) — MEOK AI Labs MCP Server
+
+HTML Parser AI MCP Server
+
+## Installation
+
+```bash
+pip install html-parser-ai-mcp
+```
+
+## Usage
+
+```bash
+# Run standalone
+python server.py
+
+# Or via MCP
+mcp install html-parser-ai-mcp
+```
 
 ## Tools
 
-- **extract_links**
-- **extract_text**
-- **validate_html**
-- **find_meta_tags**
+### `extract_links`
+Extract all links (anchor tags) from HTML content.
 
-## Quick Start
+**Parameters:**
+- `html` (str)
+- `base_url` (str)
 
-```bash
-pip install mcp
-python server.py
-```
+### `extract_text`
+Extract plain text content from HTML, stripping all tags.
 
-## Rate Limits
+**Parameters:**
+- `html` (str)
+- `preserve_newlines` (bool)
 
-- Free tier: 50 calls/day per tool
-- Upgrade: https://meok.ai/pricing
+### `validate_html`
+Validate HTML for common issues (unclosed tags, missing attributes, etc.).
 
-Built by [MEOK AI Labs](https://meok.ai)
+**Parameters:**
+- `html` (str)
+
+### `find_meta_tags`
+Extract all meta tags and their attributes from HTML.
+
+**Parameters:**
+- `html` (str)
+
+
+## Authentication
+
+Free tier: 15 calls/day. Upgrade at [meok.ai/pricing](https://meok.ai/pricing) for unlimited access.
+
+## Links
+
+- **Website**: [meok.ai](https://meok.ai)
+- **GitHub**: [CSOAI-ORG/html-parser-ai-mcp](https://github.com/CSOAI-ORG/html-parser-ai-mcp)
+- **PyPI**: [pypi.org/project/html-parser-ai-mcp](https://pypi.org/project/html-parser-ai-mcp/)
+
+## License
+
+MIT — MEOK AI Labs

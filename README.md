@@ -1,3 +1,7 @@
+[![html-parser-ai-mcp MCP server](https://glama.ai/mcp/servers/CSOAI-ORG/html-parser-ai-mcp/badges/score.svg)](https://glama.ai/mcp/servers/CSOAI-ORG/html-parser-ai-mcp)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-Published-green)](https://registry.modelcontextprotocol.io)
+[![PyPI](https://img.shields.io/pypi/v/html-parser-ai-mcp)](https://pypi.org/project/html-parser-ai-mcp/)
+
 [![html-parser-ai-mcp MCP server](https://glama.ai/mcp/servers/CSOAI-ORG/html-parser-ai-mcp/badges/card.svg)](https://glama.ai/mcp/servers/CSOAI-ORG/html-parser-ai-mcp)
 
 <div align="center">

@@ -35,6 +35,21 @@ def extract_links(html: str, base_url: str = "", api_key: str = "") -> dict:
     Args:
         html: HTML content string
         base_url: Optional base URL to resolve relative links
+
+    Behavior:
+        This tool is read-only and stateless — it produces analysis output
+        without modifying any external systems, databases, or files.
+        Safe to call repeatedly with identical inputs (idempotent).
+        Free tier: 10/day rate limit. Pro tier: unlimited.
+        No authentication required for basic usage.
+
+    When to use:
+        Use this tool when you need structured analysis or classification
+        of inputs against established frameworks or standards.
+
+    When NOT to use:
+        Not suitable for real-time production decision-making without
+        human review of results.
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
@@ -59,6 +74,21 @@ def extract_text(html: str, preserve_newlines: bool = True, api_key: str = "") -
     Args:
         html: HTML content string
         preserve_newlines: Keep newlines for block elements (default True)
+
+    Behavior:
+        This tool is read-only and stateless — it produces analysis output
+        without modifying any external systems, databases, or files.
+        Safe to call repeatedly with identical inputs (idempotent).
+        Free tier: 10/day rate limit. Pro tier: unlimited.
+        No authentication required for basic usage.
+
+    When to use:
+        Use this tool when you need structured analysis or classification
+        of inputs against established frameworks or standards.
+
+    When NOT to use:
+        Not suitable for real-time production decision-making without
+        human review of results.
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
@@ -94,6 +124,21 @@ def validate_html(html: str, api_key: str = "") -> dict:
 
     Args:
         html: HTML content string to validate
+
+    Behavior:
+        This tool is read-only and stateless — it produces analysis output
+        without modifying any external systems, databases, or files.
+        Safe to call repeatedly with identical inputs (idempotent).
+        Free tier: 10/day rate limit. Pro tier: unlimited.
+        No authentication required for basic usage.
+
+    When to use:
+        Use this tool when you need structured analysis or classification
+        of inputs against established frameworks or standards.
+
+    When NOT to use:
+        Not suitable for real-time production decision-making without
+        human review of results.
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
@@ -136,6 +181,21 @@ def find_meta_tags(html: str, api_key: str = "") -> dict:
 
     Args:
         html: HTML content string
+
+    Behavior:
+        This tool is read-only and stateless — it produces analysis output
+        without modifying any external systems, databases, or files.
+        Safe to call repeatedly with identical inputs (idempotent).
+        Free tier: 10/day rate limit. Pro tier: unlimited.
+        No authentication required for basic usage.
+
+    When to use:
+        Use this tool when you need structured analysis or classification
+        of inputs against established frameworks or standards.
+
+    When NOT to use:
+        Not suitable for real-time production decision-making without
+        human review of results.
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:

@@ -1,0 +1,31 @@
+# Html Parser Ai MCP
+
+> MEOK AI Labs MCP Server
+
+`html-parser-ai-mcp` is a Model Context Protocol (MCP) server by MEOK AI Labs.
+
+## Install
+
+```bash
+pip install html-parser-ai-mcp
+```
+
+Or run without installing:
+
+```bash
+uvx html-parser-ai-mcp
+```
+
+## Tools
+
+- `extract_links` — Extract all links (anchor tags) from HTML content.
+- `extract_text` — Extract plain text content from HTML, stripping all tags.
+- `validate_html` — Validate HTML for common issues (unclosed tags, missing attributes, etc.).
+- `find_meta_tags` — Extract all meta tags and their attributes from HTML.
+
+## Links
+
+- Source: https://github.com/CSOAI-ORG/html-parser-ai-mcp
+- PyPI: https://pypi.org/project/html-parser-ai-mcp/
+- MEOK AI Labs: https://meok.ai
+- Council of AI: https://councilof.ai

@@ -1,6 +1,4 @@
 """
-Buy Pro: https://www.csoai.org/checkout
-
 HTML Parser AI MCP Server
 HTML parsing and analysis tools powered by MEOK AI Labs.
 """

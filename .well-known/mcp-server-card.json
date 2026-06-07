@@ -1,0 +1,25 @@
+{
+  "name": "html-parser-ai-mcp",
+  "title": "Html Parser Ai Mcp",
+  "description": "Html Parser Ai automation via MCP. Includes extract links, extract text, validate html. By MEOK AI Labs.",
+  "version": "1.0.6",
+  "homepage": "https://meok.ai",
+  "license": "MIT",
+  "transport": {
+    "type": "stdio"
+  },
+  "tools": [
+    {
+      "name": "extract_links"
+    },
+    {
+      "name": "extract_text"
+    },
+    {
+      "name": "validate_html"
+    },
+    {
+      "name": "find_meta_tags"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "acpVersion": "0.1",
+  "agent": {
+    "name": "html-parser-ai-mcp",
+    "description": "Html Parser Ai MCP Server by MEOK AI Labs",
+    "version": "1.0.6",
+    "provider": "MEOK AI Labs",
+    "interfaces": [
+      {
+        "type": "mcp",
+        "transport": "stdio",
+        "package": "html-parser-ai-mcp"
+      }
+    ],
+    "capabilities": [
+      "extract_links",
+      "extract_text",
+      "validate_html",
+      "find_meta_tags"
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "name": "html-parser-ai-mcp",
+  "description": "Html Parser Ai MCP Server by MEOK AI Labs",
+  "url": "https://proofof.ai/scorecard/html-parser-ai-mcp.html",
+  "version": "1.0.6",
+  "protocolVersion": "0.2.0",
+  "provider": {
+    "organization": "MEOK AI Labs",
+    "url": "https://meok.ai"
+  },
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "defaultInputModes": [
+    "text"
+  ],
+  "defaultOutputModes": [
+    "text"
+  ],
+  "skills": [
+    {
+      "id": "extract_links",
+      "name": "Extract Links",
+      "description": "extract_links via html-parser-ai-mcp",
+      "tags": [
+        "mcp",
+        "compliance"
+      ]
+    },
+    {
+      "id": "extract_text",
+      "name": "Extract Text",
+      "description": "extract_text via html-parser-ai-mcp",
+      "tags": [
+        "mcp",
+        "compliance"
+      ]
+    },
+    {
+      "id": "validate_html",
+      "name": "Validate Html",
+      "description": "validate_html via html-parser-ai-mcp",
+      "tags": [
+        "mcp",
+        "compliance"
+      ]
+    },
+    {
+      "id": "find_meta_tags",
+      "name": "Find Meta Tags",
+      "description": "find_meta_tags via html-parser-ai-mcp",
+      "tags": [
+        "mcp",
+        "compliance"
+      ]
+    }
+  ]
+}

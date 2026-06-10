@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 [project]
 name = "html-parser-ai-mcp"
-version = "1.0.6"
+version = "1.0.7"
 readme = "README.md"
 description = "Html Parser Ai automation via MCP. Includes extract links, extract text, validate html. By MEOK AI Labs."
 license = {file = "LICENSE"}

@@ -113,3 +113,28 @@ Free tier: 10 calls/day per MCP. Pro tier (£79/mo): unlimited + cryptographical
 
 <!-- BUY-LADDER:END -->
 
+
+
+## Configuration
+
+Add to your `claude_desktop_config.json` (Claude Desktop) or your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "html-parser-ai-mcp": {
+      "command": "uvx",
+      "args": ["html-parser-ai-mcp"]
+    }
+  }
+}
+```
+
+Or: `pip install html-parser-ai-mcp` then run the `html-parser-ai-mcp` command (stdio transport).
+
+## Examples
+
+Once configured, ask your assistant, for example:
+- "Use `extract_links` to …"
+- "Use `extract_text` to …"
+- "Use `validate_html` to …"
